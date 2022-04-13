@@ -221,9 +221,7 @@ class WooController extends Controller
             ]
         ];
 		
-		// return  $create_order;
-        
-        $add_order_response = Http::withHeaders([
+		$add_order_response = Http::withHeaders([
 
 			"NETOAPI_ACTION" =>  $this->neto_action_add_order,
 			"NETOAPI_USERNAME" =>$this->neto_username,
