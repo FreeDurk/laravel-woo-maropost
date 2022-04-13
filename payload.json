@@ -171,7 +171,7 @@
 		"order_key": "wc_order_58d17c18352",
 		"created_via": "checkout",
 		"version": "3.0.0",
-		"status": "completed",
+		"status": "on-hold",
 		"currency": "USD",
 		"date_created": "2017-03-21T16:16:00",
 		"date_created_gmt": "2017-03-21T19:16:00",
