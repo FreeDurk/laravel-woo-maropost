@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App;
 use Str;
+use App\Models\Log;
 
 class WooController extends Controller
 {
@@ -140,31 +141,16 @@ class WooController extends Controller
 		$customer_action_response['action'] = $action;
 		$customer_action_response['Username'] = $username;
 
-        return  $customer_action_response;
-	}
-
-    public function getOrder($order_id = '564386'){
-		
-        $customer = [
-			"Filter" => [
-                "OrderID" => $order_id,
-				"OutputSelector" => [
-                    "Username","ID","Email","ShipAddress","BillAddress","PurchaseOrderNumber"
-                ]
-			]
+		$logs = [
+			"status" =>  $customer_action_response['Ack'],
+			"payload" => json_encode($customer),
+			"response" => json_encode($customer_action_response)
 		];
 
-        $get_customer_response = Http::withHeaders([
-
-			"NETOAPI_ACTION" => "GetOrder",
-			"NETOAPI_USERNAME" =>$this->neto_username,
-			"NETOAPI_KEY" => $this->neto_key,
-			"Accept" => "application/json"
-
-		])->post($this->neto_url , $customer)->json();
-
-		return  $get_customer_response;
-    }
+		Log::create($logs);
+		
+        return  $customer_action_response;
+	}
 
     public function addOrder($order , String $username){
 		$order_id = $order->id;
@@ -231,6 +217,14 @@ class WooController extends Controller
 		])->post($this->neto_url , $create_order)->json();
 
 		$add_order_response['order_id'] = $order_id;
+		
+		$logs = [
+			"status" =>  $add_order_response['Ack'],
+			"payload" => json_encode($create_order),
+			"response" => json_encode($add_order_response)
+		];
+
+		Log::create($logs);
 
 		return $add_order_response;
     }
@@ -254,6 +248,14 @@ class WooController extends Controller
 			"Accept" => "application/json"
 
 		])->post($this->neto_url , $create_payment)->json();
+		
+		$logs = [
+			"status" =>  $add_payment_response['Ack'],
+			"payload" => json_encode($create_payment),
+			"response" => json_encode($add_payment_response)
+		];
+
+		Log::create($logs);
 
 		return $add_payment_response;
 	}
